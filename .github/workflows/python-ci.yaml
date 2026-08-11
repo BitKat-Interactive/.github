@@ -1,0 +1,170 @@
+name: Reusable Python Continuous Integration
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: Python version used by Continuous Integration.
+        required: false
+        type: string
+        default: "3.12"
+      package-manager:
+        description: Package manager used by the repository (pip, poetry, or uv).
+        required: false
+        type: string
+        default: uv
+      lockfile-path:
+        description: Lockfile used for dependency caching.
+        required: false
+        type: string
+        default: uv.lock
+      working-directory:
+        description: Directory containing pyproject.toml or setup.py.
+        required: false
+        type: string
+        default: "."
+      install-command:
+        description: Dependency installation command.
+        required: false
+        type: string
+        default: uv sync --frozen
+      lint-command:
+        description: Lint command; skipped when empty.
+        required: false
+        type: string
+        default: uv run ruff check .
+      typecheck-command:
+        description: Type-check command; skipped when empty.
+        required: false
+        type: string
+        default: uv run mypy .
+      test-command:
+        description: Test and coverage command.
+        required: false
+        type: string
+        default: uv run pytest --cov=. --cov-report=xml --cov-report=html
+      coverage-path:
+        description: Coverage artifact path.
+        required: false
+        type: string
+        default: htmlcov/
+      coverage-artifact-name:
+        description: Uploaded coverage artifact name.
+        required: false
+        type: string
+        default: coverage
+      build-command:
+        description: Package build command.
+        required: false
+        type: string
+        default: uv build
+      build-path:
+        description: Build artifact path.
+        required: false
+        type: string
+        default: dist/
+      build-artifact-name:
+        description: Uploaded build artifact name.
+        required: false
+        type: string
+        default: package-build
+      artifact-retention-days:
+        description: Number of days to retain CI artifacts.
+        required: false
+        type: number
+        default: 7
+
+permissions:
+  contents: read
+
+jobs:
+  test-coverage:
+    name: Test and coverage
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up uv
+        if: inputs.package-manager == 'uv'
+        uses: astral-sh/setup-uv@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Cache dependencies
+        if: inputs.package-manager == 'uv'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: uv-${{ runner.os }}-${{ hashFiles(inputs.working-directory, '/', inputs.lockfile-path) }}
+          restore-keys: uv-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: ${{ inputs.install-command }}
+
+      - name: Lint
+        if: inputs.lint-command != ''
+        run: ${{ inputs.lint-command }}
+
+      - name: Type check
+        if: inputs.typecheck-command != ''
+        run: ${{ inputs.typecheck-command }}
+
+      - name: Run tests with coverage
+        run: ${{ inputs.test-command }}
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.coverage-artifact-name }}
+          path: ${{ inputs.working-directory }}/${{ inputs.coverage-path }}
+          if-no-files-found: error
+          retention-days: ${{ inputs.artifact-retention-days }}
+
+  build:
+    name: Package build
+    needs: test-coverage
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up uv
+        if: inputs.package-manager == 'uv'
+        uses: astral-sh/setup-uv@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Cache dependencies
+        if: inputs.package-manager == 'uv'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: uv-${{ runner.os }}-${{ hashFiles(inputs.working-directory, '/', inputs.lockfile-path) }}
+          restore-keys: uv-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: ${{ inputs.install-command }}
+
+      - name: Build package
+        run: ${{ inputs.build-command }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.build-artifact-name }}
+          path: ${{ inputs.working-directory }}/${{ inputs.build-path }}
+          if-no-files-found: error
+          retention-days: ${{ inputs.artifact-retention-days }}

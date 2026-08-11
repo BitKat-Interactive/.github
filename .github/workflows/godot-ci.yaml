@@ -1,0 +1,126 @@
+name: Reusable Godot Continuous Integration
+
+on:
+  workflow_call:
+    inputs:
+      godot-version:
+        description: Godot engine version used by Continuous Integration.
+        required: false
+        type: string
+        default: "4.4"
+      godot-status-version:
+        description: Godot release channel (stable, rc, beta, alpha, etc.).
+        required: false
+        type: string
+        default: stable
+      working-directory:
+        description: Directory containing the Godot project (project.godot).
+        required: false
+        type: string
+        default: "."
+      lint-command:
+        description: GDScript lint command; skipped when empty.
+        required: false
+        type: string
+        default: ""
+      test-command:
+        description: Test command (e.g. GUT headless run).
+        required: false
+        type: string
+        default: godot --headless -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json
+      test-artifact-name:
+        description: Uploaded test results artifact name.
+        required: false
+        type: string
+        default: test-results
+      test-results-path:
+        description: Test results artifact path.
+        required: false
+        type: string
+        default: test-results/
+      export-preset:
+        description: Godot export preset name; skipped when empty.
+        required: false
+        type: string
+        default: ""
+      export-path:
+        description: Export output directory.
+        required: false
+        type: string
+        default: build/
+      export-artifact-name:
+        description: Uploaded build artifact name.
+        required: false
+        type: string
+        default: game-build
+      artifact-retention-days:
+        description: Number of days to retain CI artifacts.
+        required: false
+        type: number
+        default: 7
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Godot
+        uses: maddox/action-setup-godot@v1
+        with:
+          version: ${{ inputs.godot-version }}
+          status: ${{ inputs.godot-status-version }}
+
+      - name: Lint
+        if: inputs.lint-command != ''
+        run: ${{ inputs.lint-command }}
+
+      - name: Run tests
+        run: ${{ inputs.test-command }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.test-artifact-name }}
+          path: ${{ inputs.working-directory }}/${{ inputs.test-results-path }}
+          if-no-files-found: warn
+          retention-days: ${{ inputs.artifact-retention-days }}
+
+  build:
+    name: Export build
+    needs: test
+    if: inputs.export-preset != ''
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Godot
+        uses: maddox/action-setup-godot@v1
+        with:
+          version: ${{ inputs.godot-version }}
+          status: ${{ inputs.godot-status-version }}
+
+      - name: Export project
+        run: |
+          mkdir -p "${{ inputs.export-path }}"
+          godot --headless --export-release "${{ inputs.export-preset }}" "${{ inputs.export-path }}/"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.export-artifact-name }}
+          path: ${{ inputs.working-directory }}/${{ inputs.export-path }}
+          if-no-files-found: error
+          retention-days: ${{ inputs.artifact-retention-days }}
