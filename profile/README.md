@@ -3,7 +3,7 @@
 <div align="center">
   <h3>We craft experiences to connect and build memories.</h3>
 
-  <a href="https://BitKatinteractive.com/">
+  <a href="https://bitkat.dev/">
       <img
         src="../.github/assets/bci-logo.png"
         alt="BitKat Interactive Logo"
@@ -56,14 +56,14 @@ updates about our projects, development logs, and news across
 our official channels.
 
 <h3 align="left">
-  <a href="https://BitKatinteractive.com/">
+  <a href="https://bitkat.dev/">
         <img
             src="../.github/assets/socials/bci-web.png"
             height="40"
             alt="Visit Our Website!"
         >
   </a>
-  <a href="https://www.instagram.com/BitKatinteractive/">
+  <a href="https://www.instagram.com/bitkat/">
         <img
             src="../.github/assets/socials/bci-insta.png"
             height="40"
