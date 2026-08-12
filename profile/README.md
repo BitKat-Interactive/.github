@@ -1,19 +1,19 @@
-# BitCat Interactive
+# BitKat Interactive
 
 <div align="center">
   <h3>We craft experiences to connect and build memories.</h3>
 
-  <a href="https://bitcatinteractive.com/">
+  <a href="https://BitKatinteractive.com/">
       <img
         src="../.github/assets/bci-logo.png"
-        alt="BitCat Interactive Logo"
+        alt="BitKat Interactive Logo"
         height="150"
       >
   </a>
   <br/>
   <br/>
   <p>
-    BitCat Interactive is an independent game studio and product
+    BitKat Interactive is an independent game studio and product
     company. We build games that bring people together and
     products that help creators, communities, and businesses do
     more.
@@ -21,7 +21,7 @@
 </div>
 
 > [!NOTE]
-> The official website for BitCat Interactive is actively in
+> The official website for BitKat Interactive is actively in
 > development, and this page is also a work in progress. In
 > addition to the official website, this page provides some
 > up-to-date information on projects we are actively working on,
@@ -32,7 +32,7 @@
 > and updates for our products, games, or other offerings, the
 > information on this page may change.
 
-## About BitCat Interactive
+## About BitKat Interactive
 
 Every project we take on, whether a game, a tool, or a platform,
 is built around a simple belief: **experiences, crafted with
@@ -50,20 +50,20 @@ our own SDLC process.
 
 ## Community
 
-Stay connected with the BitCat community! Follow our journey as
+Stay connected with the BitKat community! Follow our journey as
 we build games and products that bring people together. We share
 updates about our projects, development logs, and news across
 our official channels.
 
 <h3 align="left">
-  <a href="https://bitcatinteractive.com/">
+  <a href="https://BitKatinteractive.com/">
         <img
             src="../.github/assets/socials/bci-web.png"
             height="40"
             alt="Visit Our Website!"
         >
   </a>
-  <a href="https://www.instagram.com/bitcatinteractive/">
+  <a href="https://www.instagram.com/BitKatinteractive/">
         <img
             src="../.github/assets/socials/bci-insta.png"
             height="40"
@@ -83,6 +83,6 @@ our official channels.
 
 If you have any other questions or concerns regarding our
 products or games, or if you are interested in partnering with
-BitCat Interactive, please write to us at:
+BitKat Interactive, please write to us at:
 
 [hello@bitkat.dev](mailto:hello@bitkat.dev).
