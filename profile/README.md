@@ -13,10 +13,7 @@
   <br/>
   <br/>
   <p>
-    BitKat Interactive is an independent game studio and product
-    company. We build games that bring people together and
-    products that help creators, communities, and businesses do
-    more.
+     Building products and helping others build theres.
   </p>
 </div>
 
