@@ -1,8 +1,6 @@
 # BitKat Interactive
 
 <div align="center">
-  <h3>We craft experiences to connect and build memories.</h3>
-
   <a href="https://bitkat.dev/">
       <img
         src="../.github/assets/bci-logo.png"
@@ -12,9 +10,9 @@
   </a>
   <br/>
   <br/>
-  <p>
+  <h2>
      Building products and helping others build theres.
-  </p>
+  </h2>
 </div>
 
 > [!NOTE]
